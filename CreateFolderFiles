@@ -1,0 +1,26 @@
+<!--- creates a directory in the specified location --->
+<!--- 
+<cfdirectory action="create" directory="#expandPath("./myNewDir")#"> 
+<cfset currentDirectory = GetDirectoryFromPath(GetTemplatePath()) & "newDir"> 
+localhost:5555/Projects/Jeff/SharePoint/createFolder.cfm 
+---> 
+
+<cfoutput>#GetDirectoryFromPath(GetBaseTemplatePath())# <br></cfoutput>
+
+<!--- Check whether the directory exists. ---> 
+<cfif DirectoryExists(expandPath("./myNewDir"))> 
+    <cfoutput>#expandPath("./myNewDir")# exists</cfoutput>
+<cfelse> 
+    <!--- If no, create the directory. ---> 
+    <cfdirectory action = "create" directory = "#expandPath("./myNewDir")#" > 
+    <cfoutput><p>directory created.</p></cfoutput> 
+</cfif> 
+
+
+<cfif FileExists(#expandPath("./myNewDir/sua.txt")#) >
+<cffile action="append" output="#expandPath("./myNewDir")#" file="#expandPath("./myNewDir")#/sua.txt">
+<cfelse>
+<cffile action="write" output="#expandPath("./myNewDir")#" file="#expandPath("./myNewDir")#/sua.txt"> 
+</cfif>
+
+
