@@ -1,0 +1,39 @@
+https://helpx.adobe.com/coldfusion/developing-applications/using-web-elements-and-external-objects/integrating-jee-and-java-elements-in-cfml-applications/enhanced-java-integration-in-coldfusion.html
+
+Create a Java file, Test.java.
+
+public class Test 
+{ 
+public String testJava() 
+{ 
+return "Hello Java!!"; 
+} 
+}
+
+ 
+
+Compile the Java file using a Java compiler.
+Add the following entry to the Application.cfcof your project:
+
+<cfset THIS.javaSettings = {LoadPaths = ["/myJava/lib"],reloadOnChange=true,watchInterval=30}/>
+
+ 
+
+Create the following directory structure in your application folder:
+
+/myJava/lib
+
+ 
+
+Copy the Test.class file to the /myJava/lib folder.
+Create a CFM file with the following content.
+
+<cfobject type="java" class="Test" name="myObj"> 
+<cfset y = myObj.init()> 
+<cfoutput > 
+#y.testJava()# 
+</cfoutput>
+
+ 
+
+Deploy the application and access the CFM file.
