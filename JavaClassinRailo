@@ -12,8 +12,16 @@ return "Hello Java!!";
 
  
 
-Compile the Java file using a Java compiler.
-Add the following entry to the Application.cfcof your project:
+Compile the Java file using a Java compiler.   javac file.java
+!!!!!!!
+if you are using some imports add them in set classpath
+c:\user>set classpath=%classpath%;C:\Users\vkoloyu\jars\mail.jar;
+and only after that > compile
+
+
+
+
+Add the following entry to the Application.cfc of your project:
 
 <cfset THIS.javaSettings = {LoadPaths = ["/myJava/lib"],reloadOnChange=true,watchInterval=30}/>
 
