@@ -38,3 +38,58 @@ A manager's salary is #mgrObj.basesalary + mgrObj.mgrBonus# per week.<br>
 A president's salary is #prezObj.basesalary + prezObj.mgrBonus + 
 prezObj.PrezBonus# per week. 
 </cfoutput>
+
+
+
+
+
+
+Using the Super keyword
+You use the Super keyword only on CFCs that use the Extends attribute to extend another CFC. Unlike ColdFusion scopes, the Super keyword is not used for variables; it is only used for CFC methods, and it is not available on ColdFusion pages that invoke CFCs. 
+The Super keyword lets you refer to versions of methods that are defined in the CFC that the current component extends. For example, the employee, manager, and president CFCs each contain a getPaid method. The manager CFC extends the employee CFC. Therefore, the manager CFC can use the original versions of the overridden getPaid method, as defined in the employee CFC, by prefixing the method name with Super.
+
+Create the employee.cfc file with the following content:
+
+<cfcomponent> 
+<cffunction name="getPaid" returntype="numeric"> 
+<cfset var salary=40*20> 
+<cfreturn salary> 
+</cffunction> 
+</cfcomponent>
+
+ 
+
+Create the manager.cfc file with the following content:
+
+<cfcomponent extends="employee"> 
+<cffunction name="getPaid" returntype="numeric"> 
+<cfset var salary=1.5 * Super.getPaid()> 
+<cfreturn salary> 
+</cffunction> 
+</cfcomponent>
+
+ 
+
+Create the president.cfc file with the following content:
+
+<cfcomponent extends="manager"> 
+<cffunction name="getPaid" returntype="numeric"> 
+<cfset var salary=1.5 * Super.getPaid()> 
+<cfreturn salary> 
+</cffunction> 
+</cfcomponent>
+
+ 
+
+Create the payday.cfm file with the following content, and save it in the same directory as the components that you created in the previous steps:
+
+<cfobject name="empObj" component="employee"> 
+<cfobject name="mgrObj" component="manager"> 
+<cfobject name="prezObj" component="president"> 
+<cfoutput> 
+<cfoutput> 
+An employee earns #empObj.getPaid()#.<br> 
+A manager earns #mgrObj.getPaid()#.<br> 
+The president earns #prezObj.getPaid()#. 
+</cfoutput> 
+</cfoutput>
