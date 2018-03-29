@@ -1,0 +1,40 @@
+https://helpx.adobe.com/coldfusion/developing-applications/building-blocks-of-coldfusion-applications/building-and-using-coldfusion-components/using-cfcs-effectively.html
+
+
+
+
+Create the employee.cfc file with the following content:
+
+<cfcomponent> 
+<cfset This.basesalary=40*20> 
+</cfcomponent>
+
+ 
+
+Create the manager.cfc file with the following content:
+
+<cfcomponent extends="employee"> 
+<cfset This.mgrBonus=40*10> 
+</cfcomponent>
+
+In the example, the cfcomponent tag's extends attribute points to the employee component.
+
+Create the president.cfc file with the following content:
+
+<cfcomponent extends="manager"> 
+<cfset This.prezBonus=40*20> 
+</cfcomponent>
+
+In the example, the cfcomponent tag's extends attribute points to the manager component.
+
+Create the inherit.cfm file with the following content, and save it in the same directory as the components you created in the previous steps:
+
+<cfobject name="empObj" component="employee"> 
+<cfobject name="mgrObj" component="manager"> 
+<cfobject name="prezObj" component="president"> 
+<cfoutput> 
+An employee's salary is #empObj.basesalary# per week.<br> 
+A manager's salary is #mgrObj.basesalary + mgrObj.mgrBonus# per week.<br> 
+A president's salary is #prezObj.basesalary + prezObj.mgrBonus + 
+prezObj.PrezBonus# per week. 
+</cfoutput>
