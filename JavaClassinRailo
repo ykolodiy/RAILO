@@ -48,4 +48,43 @@ Deploy the application and access the CFM file.
 
 
 
+// or use java loader
+http://burnignorance.com/coldfusion-application-development/javaloader-in-coldfusion/   http://javaloader.riaforge.org/
 
+Here are the few steps  for implementating JavaLoader-
+Download the JavaLoader jar file by hitting the url .(http://javaloader.riaforge.org/)
+Extract and put the JavaLoader folder inside your project folder.
+Now suppose-
+our Project folder is: D\Projects\MyJavaloader
+Url :(http://localhost/MyJavaLoader/)
+ 
+Javaloader folder is placed inside: D\Projects\MyJavaloader\Javaloader.
+ 
+Let say we have placed the two jar files viz. ‘Car.jar’ and ‘Bike.jar’ containing bmw and pulsar classes respectively anywhere inside our project folder.
+ 
+ 
+Code Snippet:
+<cfscript>
+ 
+// An Array with absolute file paths of the referred jar files.
+ 
+filePaths = ArrayNew(1);
+filePaths
+[1] = expandPath("Car.jar”);
+filePaths[2] = expandPath("Bike.jar”);
+ 
+//Creating a java loader object by passing in the array containing the file paths –
+loaderObj =createObject("component","MyJavaloader.Javaloader.JavaLoader”).init(paths);
+[
+//So now, we can simply create a instance of an object from the ‘bmw’ and ‘pulsar’ class.
+   bmw = loaderObj.create("bmw").init();
+   pulsar = loaderObj.create("pulsar").init();
+ 
+/*Note:For accessing  static method  we need to remove the init method while instantiating an object.
+   For example-
+staticClassObj
+= loaderObj.create("staticClassName");
+   result = staticClassObj.getTheOutput(arguments);
+*/
+   
+</cfscript>
