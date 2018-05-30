@@ -1,17 +1,89 @@
-<cfset myDoc=XMLParse("https://www.pearsonhomeschool.com/sitemap.xml")> 
-<cfset urls=ArrayNew(1)>
+<cfif structKeyExists(form, 'Submit')>
 
-<cfloop from="1" to="#arraylen(myDoc.XmlRoot.XmlChildren)#" index="i" step="1">
+<p id="demo"></p>
+
+
+	<cfset timer = 0>
+	
+	<cfset myDoc=XMLParse("#form.url#")> 
+	<cfset urls=ArrayNew(1)>
+
+	<cfloop from="1" to="#arraylen(myDoc.XmlRoot.XmlChildren)#" index="i" step="1">
 	<!---  <cfoutput>#myDoc.XmlRoot.XmlChildren[i].xmlChildren[1].XmlText#<br></cfoutput> --->
 	<cfset urls[i]=#myDoc.XmlRoot.XmlChildren[i].xmlChildren[1].XmlText#>
-</cfloop>
+	</cfloop>
+
+	<cfloop array="#urls#" index="k" item="url">
+	<cfset timer = timer +1>
+	<cfset procent = round(timer*100/#arraylen(myDoc.XmlRoot.XmlChildren)#) >
+
+<!--- PROGRESS % HERE --->
+<script type="text/javascript">
+<cfoutput> 
+var #toScript(procent, "jsVar")#; 
+</cfoutput> 
+	document.getElementById("demo").innerHTML = jsVar +"% done.";
+</script>
 
 
 
-<cfloop array="#urls#" index="k" item="url"   >
-<cfoutput>#urls[k]#</cfoutput>
-<cfhttp result="result" method="HEAD" charset="utf-8" url="#urls[k]#" >
-<cfoutput>#result.status_code#<br></cfoutput>
-</cfloop>
+		<cfhttp result="result" method="HEAD" charset="utf-8" url="#urls[k]#" >
+		<cfflush interval=10> 
+		<cfoutput>#urls[k]# has code #result.status_code#<br></cfoutput>
 
-<!--- <cfdump var="#myDoc.XmlRoot.XmlChildren#"> --->
+	</cfloop>
+	Done.
+	<cfset structClear(form)>
+	<!--- <cfdump var="#myDoc.XmlRoot.XmlChildren#"> --->
+</cfif>
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+
+<body>
+
+<cfform id="sitemap" name= "sitemap" >
+
+<select name="url" form="sitemap">
+  <option value="https://www.pearsonschool.com/sitemap.xml">https://www.pearsonschool.com/sitemap.xml</option>
+  <option value="https://www.pearsonhomeschool.com/sitemap.xml">https://www.pearsonhomeschool.com/sitemap.xml</option>
+</select>
+
+  <cfinput type="submit" name="Submit" value="Submit">
+
+ </cfform> 
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
