@@ -1,11 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+
+<body>
+
+
+
+
+
 <cfif structKeyExists(form, 'Submit')>
 
 <p id="demo"></p>
 
+<script type="text/javascript">
+<cfif form.url EQ "https://www.pearsonschool.com/sitemap.xml" >
+<cfset selected = 'ps' >
+<cfoutput> 
+var #toScript(selected, "selected")#; 
+</cfoutput> 
+<cfelse>
+<cfset selected = 'phs' >
+<cfoutput> 
+var #toScript(selected, "selected")#; 
+</cfoutput> 	
+</cfif>
+</script>
 
 	<cfset timer = 0>
 	<cfset broken = 0>
-
 
 	<cfset myDoc=XMLParse("#form.url#")> 
 	<cfset urls=ArrayNew(1)>
@@ -26,16 +49,13 @@ var #toScript(procent, "jsVar")#;
 	document.getElementById("demo").innerHTML = jsVar +"% Testing ...";
 </script>
 
-
-
-		<cfhttp result="result" method="HEAD" charset="utf-8" url="#urls[k]#" >
-		<cfflush interval=10> 
-		<cfif result.status_code neq 200>
-		<cfoutput>#urls[k]# has code #result.status_code#<br></cfoutput>
-        <cfset broken = broken+1 >
-		</cfif>
-		
-
+	<cfhttp result="result" method="HEAD" charset="utf-8" url="#urls[k]#" >
+	<cfflush interval=10> 
+	<cfif result.status_code neq 200>
+	<cfoutput>#urls[k]# has code #result.status_code#<br></cfoutput>
+    <cfset broken = broken+1 >
+	</cfif>
+	
 	</cfloop>
 	<cfoutput>#broken# of Broken in #form.url#. Done.</cfoutput>
 	<cfset structClear(form)>
@@ -46,49 +66,30 @@ var #toScript(procent, "jsVar")#;
 
 
 
-<!DOCTYPE html>
-<html>
-<head>
-</head>
-
-<body>
-
 <cfform id="sitemap" name= "sitemap" >
 
 <select name="url" form="sitemap">
-  <option value="https://www.pearsonschool.com/sitemap.xml">https://www.pearsonschool.com/sitemap.xml</option>
-  <option value="https://www.pearsonhomeschool.com/sitemap.xml">https://www.pearsonhomeschool.com/sitemap.xml</option>
+  <option value="https://www.pearsonschool.com/sitemap.xml" id="opt1">https://www.pearsonschool.com/sitemap.xml</option>
+  <option value="https://www.pearsonhomeschool.com/sitemap.xml" id="opt2" >https://www.pearsonhomeschool.com/sitemap.xml</option>
 </select>
 
   <cfinput type="submit" name="Submit" value="Submit">
 
- </cfform> 
+</cfform> 
+
+<script type="text/javascript"> 
+if (selected == 'ps'){document.getElementById('opt1').selected = 'selected';}
+if (selected == 'phs'){document.getElementById('opt2').selected = 'selected';}
+</script>
+
+
+
+
+
+
+
+
+
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
