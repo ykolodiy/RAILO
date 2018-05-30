@@ -1,0 +1,17 @@
+<cfset myDoc=XMLParse("https://www.pearsonhomeschool.com/sitemap.xml")> 
+<cfset urls=ArrayNew(1)>
+
+<cfloop from="1" to="#arraylen(myDoc.XmlRoot.XmlChildren)#" index="i" step="1">
+	<!---  <cfoutput>#myDoc.XmlRoot.XmlChildren[i].xmlChildren[1].XmlText#<br></cfoutput> --->
+	<cfset urls[i]=#myDoc.XmlRoot.XmlChildren[i].xmlChildren[1].XmlText#>
+</cfloop>
+
+
+
+<cfloop array="#urls#" index="k" item="url"   >
+<cfoutput>#urls[k]#</cfoutput>
+<cfhttp result="result" method="HEAD" charset="utf-8" url="#urls[k]#" >
+<cfoutput>#result.status_code#<br></cfoutput>
+</cfloop>
+
+<!--- <cfdump var="#myDoc.XmlRoot.XmlChildren#"> --->
