@@ -4,7 +4,9 @@
 
 
 	<cfset timer = 0>
-	
+	<cfset broken = 0>
+
+
 	<cfset myDoc=XMLParse("#form.url#")> 
 	<cfset urls=ArrayNew(1)>
 
@@ -17,22 +19,25 @@
 	<cfset timer = timer +1>
 	<cfset procent = round(timer*100/#arraylen(myDoc.XmlRoot.XmlChildren)#) >
 
-<!--- PROGRESS % HERE --->
 <script type="text/javascript">
 <cfoutput> 
 var #toScript(procent, "jsVar")#; 
 </cfoutput> 
-	document.getElementById("demo").innerHTML = jsVar +"% done.";
+	document.getElementById("demo").innerHTML = jsVar +"% Testing ...";
 </script>
 
 
 
 		<cfhttp result="result" method="HEAD" charset="utf-8" url="#urls[k]#" >
 		<cfflush interval=10> 
+		<cfif result.status_code neq 200>
 		<cfoutput>#urls[k]# has code #result.status_code#<br></cfoutput>
+        <cfset broken = broken+1 >
+		</cfif>
+		
 
 	</cfloop>
-	Done.
+	<cfoutput>#broken# of Broken in #form.url#. Done.</cfoutput>
 	<cfset structClear(form)>
 	<!--- <cfdump var="#myDoc.XmlRoot.XmlChildren#"> --->
 </cfif>
