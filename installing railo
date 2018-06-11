@@ -1,0 +1,69 @@
+Installing RAILO with Tomcat apache in window.
+
+1. Download war version of Railo.
+
+2. Download tomcat apache version.
+
+Install tomcat (just extract zipped file) any location (In my case e:/apache). Now extract downloaded Railo's war file using winrar or 7zip in temprory folder.
+
+Now copy all jar files from /WEB-INF/lib of extracted railo's folder and paste to tomcat lib folder (in my case e:/apache/lib). Open web.xml file from railo's /WEB-INF/lib folder and copy all servlet and servlet-mapping node to tomcat/conf/web.xml file. Copy index.cfm, index.cfml welcome-file to tomcat's web.xml file under welcome-file-list tag so it look like
+
+?
+1
+<welcome-file-list><welcome-file>index.cfm</welcome-file><welcome-file>index.cfml</welcome-file><welcome-file>index.html</welcome-file><welcome-file>index.htm</welcome-file><welcome-file>index.jsp</welcome-file></welcome-file-list>
+That is it. We finish railo related setup is completed and it's time run apache now, but wait first of all you need to create two environment variables
+
+1. JAVA_HOME : Point to jdk directory (in my case c:/java/jdk1.6.0_20)
+
+2. JRE_HOME : Point to JRE director (in my case c:/java/jre6)
+
+Now we are ready to run apache. Run startup.bat file from tomcat/bin folder from command prompt. Type http://localhost:8888/ on your browser and
+
+you may see tomcat welcome page and this is cofirm that your tomcat is running. Let's move one more step and test our railo is working or not. Go to
+
+/tomcat/webapps/example and create folder "Coldfusion" and add simple cfml file index.cfm with <cfdump var="#cgi#"> code to ensure that our cfml file is working.
+
+Run http://localhost:8888/examples/coldfusion/. Awesome my cfml engine is running.
+
+But this is not enough for programmer as we need to run multiple sites on same server. To run multiple site open server.xml file from tomcat/conf folder and look for
+
+Connect node with protocol="HTTP/1.1" attribute.
+
+In my case it was
+
+?
+1
+<Connector port="8888" protocol="HTTP/1.1" connectionTimeout="20000" redirectPort="8443" />
+Notice port no, yes this what we have used in our URL. You can change to 80 if you do not want to type port number in URL (But make sure it is not conflicting with already installed IIS).
+
+Now search for <HOST> node. There will be one default host entry which points to webapps folder and because of that our first coldfusion file was run.
+
+?
+1
+<Host name="localhost" appBase="webapps" unpackWARs="true" autoDeploy="true" xmlValidation="false" xmlNamespaceAware="false"></host>
+Add one more entry for another site and in appBase point to your new website folder and in name attribute specify domain name you want to access.
+
+?
+1
+<Host name="railosite1.local" appBase="e:\railosite1\" unpackWARs="true" autoDeploy="true" xmlValidation="false" xmlNamespaceAware="false"></Host>
+Save your server.xml file, shutdown apache (if already running) and run apache using startup.bat file. If you look into your site folder there will be one more folder (WEB-INF) copied.
+
+Now type http://railosite1.local:8888 (port number defined in connector in server.xml).
+
+You will see your website running under RAILO server.
+
+Dosn't it?
+
+Wait.. You may not have hosts setting for railosite1.local in hosts file. Just follow below steps to point railosite1.local to 127.0.0.1.
+
+1. Open your notepad with administrator access (just right click on icon and select option 'Run as administrator').
+
+2. Browse for %SystemRoot%\system32\drivers\etc\ directory and open hosts file.
+
+3. Add line "127.0.0.1 railosite1.local" wihtout quotes and save hosts file.
+
+It should work now....
+
+Try below for server administrator.
+
+http://railosite1.local:8888/railo-context/admin/server.cfm
