@@ -1,69 +1,161 @@
-Installing RAILO with Tomcat apache in window.
+https://blog.learnosity.com/2009/03/27/installing-railo-on-tomcat-via-apache-on-leopard-step-by-step/
 
-1. Download war version of Railo.
 
-2. Download tomcat apache version.
 
-Install tomcat (just extract zipped file) any location (In my case e:/apache). Now extract downloaded Railo's war file using winrar or 7zip in temprory folder.
+After a bit of fiddling and head scratching I managed to install Railo on Tomcat via Apache on my laptop running on OS X 10.5.6.
 
-Now copy all jar files from /WEB-INF/lib of extracted railo's folder and paste to tomcat lib folder (in my case e:/apache/lib). Open web.xml file from railo's /WEB-INF/lib folder and copy all servlet and servlet-mapping node to tomcat/conf/web.xml file. Copy index.cfm, index.cfml welcome-file to tomcat's web.xml file under welcome-file-list tag so it look like
+Tomcat
+Firstly, download Tomcat 6
 
-?
-1
-<welcome-file-list><welcome-file>index.cfm</welcome-file><welcome-file>index.cfml</welcome-file><welcome-file>index.html</welcome-file><welcome-file>index.htm</welcome-file><welcome-file>index.jsp</welcome-file></welcome-file-list>
-That is it. We finish railo related setup is completed and it's time run apache now, but wait first of all you need to create two environment variables
+extract content:
 
-1. JAVA_HOME : Point to jdk directory (in my case c:/java/jdk1.6.0_20)
+tar xvzf apache-tomcat-6.0.18.tar.gz
 
-2. JRE_HOME : Point to JRE director (in my case c:/java/jre6)
+Move Tomcat to a more secure place:
 
-Now we are ready to run apache. Run startup.bat file from tomcat/bin folder from command prompt. Type http://localhost:8888/ on your browser and
+sudo mv apache-tomcat-6.0.18 /usr/local/tomcat
 
-you may see tomcat welcome page and this is cofirm that your tomcat is running. Let's move one more step and test our railo is working or not. Go to
+Railo
+Download Railo custom version
 
-/tomcat/webapps/example and create folder "Coldfusion" and add simple cfml file index.cfm with <cfdump var="#cgi#"> code to ensure that our cfml file is working.
+extract and move into Tomcat lib directory:
 
-Run http://localhost:8888/examples/coldfusion/. Awesome my cfml engine is running.
+tar zxvf railo-3.0.2.001-jars.tar.gz
+sudo mv railo-3.0.2.001-jars/* /usr/local/tomcat/lib
 
-But this is not enough for programmer as we need to run multiple sites on same server. To run multiple site open server.xml file from tomcat/conf folder and look for
+Make Tomcat and Railo work together by modifying the web config file:
 
-Connect node with protocol="HTTP/1.1" attribute.
+sudo nano /usr/local/tomcat/conf/web.xml
 
-In my case it was
+add the following inside the <web-app> element:
 
-?
-1
-<Connector port="8888" protocol="HTTP/1.1" connectionTimeout="20000" redirectPort="8443" />
-Notice port no, yes this what we have used in our URL. You can change to 80 if you do not want to type port number in URL (But make sure it is not conflicting with already installed IIS).
+<servlet>
+<servlet-name>CFMLServlet</servlet-name>
+<servlet-class>railo.loader.servlet.CFMLServlet</servlet-class>
+<init-param>
+<param-name>configuration</param-name>
+<param-value>{web-root-directory}/WEB-INF/railo/</param-value>
+<description>Configuraton directory</description>
+</init-param>
+<load-on-startup>1</load-on-startup>
+</servlet>
+<servlet-mapping>
+<servlet-name>CFMLServlet</servlet-name>
+<url-pattern>*.cfm</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+<servlet-name>CFMLServlet</servlet-name>
+<url-pattern>*.cfml</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+<servlet-name>CFMLServlet</servlet-name>
+<url-pattern>*.cfc</url-pattern>
+</servlet-mapping>
 
-Now search for <HOST> node. There will be one default host entry which points to webapps folder and because of that our first coldfusion file was run.
+add the following inside <welcome-file-list> element:
 
-?
-1
-<Host name="localhost" appBase="webapps" unpackWARs="true" autoDeploy="true" xmlValidation="false" xmlNamespaceAware="false"></host>
-Add one more entry for another site and in appBase point to your new website folder and in name attribute specify domain name you want to access.
+<welcome-file>index.cfm</welcome-file>
+<welcome-file>index.cfml</welcome-file>
 
-?
-1
-<Host name="railosite1.local" appBase="e:\railosite1\" unpackWARs="true" autoDeploy="true" xmlValidation="false" xmlNamespaceAware="false"></Host>
-Save your server.xml file, shutdown apache (if already running) and run apache using startup.bat file. If you look into your site folder there will be one more folder (WEB-INF) copied.
+Apache
+Leopard OS comes with Apache 2, so you don't have to worry about installing it. However, you need to download The Apache Tomcat Connector source code.
 
-Now type http://railosite1.local:8888 (port number defined in connector in server.xml).
+Next you need to compile the source so that the resulting binary file is compatible with your Intel Mac architecture. I got this from Eric Rank's blog
 
-You will see your website running under RAILO server.
+cd into tomcat source:
 
-Dosn't it?
+cd tomcat-connectors-1.2.27-src/native
 
-Wait.. You may not have hosts setting for railosite1.local in hosts file. Just follow below steps to point railosite1.local to 127.0.0.1.
+Edit the apache-2.0/Makefile.apxs.in file.
 
-1. Open your notepad with administrator access (just right click on icon and select option 'Run as administrator').
+Replace
 
-2. Browse for %SystemRoot%\system32\drivers\etc\ directory and open hosts file.
+mod_jk.la:
+$(APXS) -c -o $@ -Wc,"${APXSCFLAGS} ${JK_INCL}" "${JAVA_INCL}" "${APXSLDFLAGS}" mod_jk.c ${APACHE_OBJECTS}
 
-3. Add line "127.0.0.1 railosite1.local" wihtout quotes and save hosts file.
+with:
 
-It should work now....
 
-Try below for server administrator.
+mod_jk.la:
+$(APXS) -c -o $@ -Wc,"${APXSCFLAGS} -arch x86_64 ${JK_INCL}" "${JAVA_INCL}" "${APXSLDFLAGS} -arch x86_64 " mod_jk.c ${APACHE_OBJECTS}
 
-http://railosite1.local:8888/railo-context/admin/server.cfm
+configure the build files:
+
+./configure --with-apxs=/usr/sbin/apxs
+
+now go into apache-2.0 directory and build:
+
+cd apache-2.0
+make -f Makefile.apxs
+
+Finally install
+
+sudo make install
+
+Now specify the connection between Apache and Tomcat. To do this you need to create workers.properties file. I created mine in /etc/apache2.
+
+sudo nano /etc/apache2/workers.properties
+
+Paste the following:
+
+worker.list=default
+
+worker.default.port=8009
+worker.default.host=localhost
+worker.default.type=ajp13
+worker.default.lbfactor=1
+
+Now we need to modify the Apache httpd.conf file:
+
+sudo nano /etc/apache2/httpd.conf
+
+Enable The Apache Tomcat Connector:
+
+LoadModule jk_module libexec/apache2/mod_jk.so
+
+Underneath that tell Apache where your workers.properties file is located and add some logging info (could be useful):
+
+# Mod_jk settings
+JkWorkersFile /etc/apache2/workers.properties
+JkLogFile /var/log/apache2/mod_jk.log
+JkLogLevel debug
+DirectoryIndex index.html index.htm index.cfm index.cfml
+
+Back to Tomcat
+To test our Railo installation, let's create a test site by adding a new virtual host in both Tomcat and Apache. We do this by modifying Tomcat server.xml file (/usr/local/tomcat/conf/server.xml )
+
+<Host name="railo.local" appBase="webapps">
+<Context path="" docBase="/Library/Webserver/Documents"/>
+</Host>
+
+Apache
+Now we need to create a virtual host entry in Apache as well:
+
+<VirtualHost *:80>
+JkMount /*.cfm default
+ServerName railo.local
+DirectoryIndex index.cfm
+</VirtualHost>
+
+
+JkMount /*.cfm default
+
+Tells mod_jk to use the connector specified in your workers.properties file when it encounters a .cfm extension.
+
+Important
+Notice that in my Apache VirtualHost entry there is no DocumentRoot. I originally had it in there and it was breaking my Apache-Tomcat connection. It was driving me mad. It's probably because document root is already specified in /usr/local/tomcat/conf/server.xml.
+
+One last thing, to start your Tomcat server type in this command:
+
+/usr/local/tomcat/bin/startup.sh
+
+shut down
+
+
+/usr/local/tomcat/bin/shutdown.sh
+
+My assumption is that the above steps would be very similar on other operating systems as long as you use the correct file paths.
+
+Good luck 🙂
+
+Marko
