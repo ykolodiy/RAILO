@@ -5,7 +5,9 @@ using Application.cfc
 <cfset THIS.javaSettings = {LoadPaths = [".\lib\"],  reloadOnChange= true, watchInterval = 30, } >
 </cfcomponent>
 
-2. in lib folder add test.java and compile to test.class
+2. in lib folder add test.java and compile to test.class   (if you are using some imports add them in set classpath
+c:\user>set classpath=%classpath%;C:\Users\vkoloyu\jars\mail.jar;
+and only after that > compile)
 3 in cfm file instantiate the class:
 <cfobject type="java" class="test" name="myObj"> 
 <cfset y = myObj.init()> 
