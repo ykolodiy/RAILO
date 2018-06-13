@@ -1,3 +1,23 @@
+using Application.cfc
+
+1 in Application.cfc add:
+<cfcomponent>
+<cfset THIS.javaSettings = {LoadPaths = [".\lib\"],  reloadOnChange= true, watchInterval = 30, } >
+</cfcomponent>
+
+2. in lib folder add test.java and compile to test.class
+3 in cfm file instantiate the class:
+<cfobject type="java" class="test" name="myObj"> 
+<cfset y = myObj.init()> 
+
+and use it #y.callmethodfromjavaclass()#
+
+
+
+
+
+
+____
 https://helpx.adobe.com/coldfusion/developing-applications/using-web-elements-and-external-objects/integrating-jee-and-java-elements-in-cfml-applications/enhanced-java-integration-in-coldfusion.html
 
 Create a Java file, Test.java.
