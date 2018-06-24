@@ -1,0 +1,12 @@
+<cfset thisString="hello world">
+<script type="text/javascript" language="JavaScript">
+   <cfoutput>
+      var #toScript(thisString, "jsVar")#;
+   </cfoutput>
+</script>
+
+
+When ColdFusion runs this code, it sends the following to the client:
+<script type="text/javascript" language="JavaScript">
+   var jsVar = "hello world";
+</script>
