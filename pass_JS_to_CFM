@@ -1,31 +1,75 @@
-<script type="text/javascript" src="jquery.json.min.js"></script>
-<script type="text/javascript">
-  $(function() {
-      var mydata = "[1,2,3]";
-      $.post('test.cfc', {
-          method: "handleArray",
-          returnFormat: "plain",
-          data: mydata
-      }, function(res) {
-          alert("ok");
-      });
-  });
-</script>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Posting JSON Data To The Server Using jQuery</title>
+    <script type="text/javascript" src="./jquery-1.6.1.js"></script>
+</head>
+<body>
 
- <cffunction name="handleArray" access="remote" returnType="numeric">
-        <cfargument name="data" type="any" required="true">
-        <cfset var getArray = DeserializeJSON(arguments.data)/>
-        <cfset var qTest = "">
+    <h1>
+        Posting JSON Data To The Server Using jQuery
+    </h1>
 
-        <cfquery name = "qTest" datasource="#REQUEST.dsn#" username="#REQUEST.dsu#" password="#REQUEST.dsp#"> 
-            INSERT INTO test
-            (value1, value2, value3)
-            VALUES (
-                <cfqueryparam cfsqltype="cf_sql_integer" value="#getArray[1]#">,
-                <cfqueryparam cfsqltype="cf_sql_integer" value="#getArray[2]#">,
-                <cfqueryparam cfsqltype="cf_sql_integer" value="#getArray[3]#">
-          )
-        </cfquery>
+    <div id="response">
+        <!-- To be populated dynamically. -->
+    </div>
 
-        <cfreturn arrayLen(getArray)>
-  </cffunction>
+    <script type="text/javascript">
+        // Define the data packet that we are going to post to the
+        // server. This will be "stringified" as a JSON value.
+        var postData = {
+            name: "Joanna",
+            hair: "Brunette",
+            age: 35,
+            favoriteMovies: [
+                "Terminator 2",
+                "The Notebook",
+                "Teenwolf"
+            ]
+        };
+        // Post the data to the server as the HTTP Request Body.
+        // To do this, we have to stringify the postData value
+        // and pass it in a string value (so that jQuery won't try
+        // to process it as a query string).
+        var ajaxResponse = $.ajax({
+            type: "post",
+            url: "./api.cfm",
+            contentType: "application/json",
+            data: JSON.stringify( postData )
+        })
+        // When the response comes back, output the HTML.
+        ajaxResponse.then(
+            function( apiResponse ){
+                // Dump HTML to page for debugging.
+                $( "#response" ).html( apiResponse );
+            }
+        );
+    </script>
+
+</body>
+</html>
+view rawcode-1.htm hosted with ❤ by GitHub
+As you can see, we are building up a JavaScript object, postData, that holds the information we want to send to the server. We then post that data using jQuery.ajax(). When we do so, we are manually setting the content-type to be "application/json" and we are explicitly serializing the postData value into a JSON representation.
+
+When we post this JSON packet to the server, it is being processed by the ColdFusion page, api.cfm:
+
+API.cfm
+<!---
+    Get the HTTP request body content.
+    NOTE: We have to use toString() as an intermediary method
+    call since the JSON packet comes across as a byte array
+    (binary data) which needs to be turned back into a string before
+    ColdFusion can parse it as a JSON value.
+--->
+<cfset requestBody = toString( getHttpRequestData().content ) />
+
+<!--- Double-check to make sure it's a JSON value. --->
+<cfif isJSON( requestBody )>
+
+    <!--- Echo back POST data. --->
+    <cfdump
+        var="#deserializeJSON( requestBody )#"
+        label="HTTP Body"
+        />
+
+</cfif>
