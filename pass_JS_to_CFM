@@ -1,0 +1,31 @@
+<script type="text/javascript" src="jquery.json.min.js"></script>
+<script type="text/javascript">
+  $(function() {
+      var mydata = "[1,2,3]";
+      $.post('test.cfc', {
+          method: "handleArray",
+          returnFormat: "plain",
+          data: mydata
+      }, function(res) {
+          alert("ok");
+      });
+  });
+</script>
+
+ <cffunction name="handleArray" access="remote" returnType="numeric">
+        <cfargument name="data" type="any" required="true">
+        <cfset var getArray = DeserializeJSON(arguments.data)/>
+        <cfset var qTest = "">
+
+        <cfquery name = "qTest" datasource="#REQUEST.dsn#" username="#REQUEST.dsu#" password="#REQUEST.dsp#"> 
+            INSERT INTO test
+            (value1, value2, value3)
+            VALUES (
+                <cfqueryparam cfsqltype="cf_sql_integer" value="#getArray[1]#">,
+                <cfqueryparam cfsqltype="cf_sql_integer" value="#getArray[2]#">,
+                <cfqueryparam cfsqltype="cf_sql_integer" value="#getArray[3]#">
+          )
+        </cfquery>
+
+        <cfreturn arrayLen(getArray)>
+  </cffunction>
