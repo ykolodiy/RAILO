@@ -1,0 +1,1 @@
+<cfoutput>online now: #serialize(Application.exclusive.Users)#</cfoutput>
