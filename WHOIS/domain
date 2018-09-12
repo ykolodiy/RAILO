@@ -24,7 +24,7 @@
 
 
 <cfset E =  xmlSearch(mydoc,'WhoisRecord/registryData/expiresDate') >
-<cfdump var="#E#" >
+<cfdump var="#E[1].XmlText#" >
 
 	
 <!---
