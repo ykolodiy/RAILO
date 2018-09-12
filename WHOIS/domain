@@ -1,0 +1,39 @@
+
+
+
+<cfif structKeyExists(url, "varname") and url.varname neq ""> 
+	<cfset domain = url.domain /> 
+</cfif>
+
+
+
+
+
+
+<cfparam name="domain" default="pearson.com"/>
+<cfset urltorun = "https://www.whoisxmlapi.com/whoisserver/WhoisService?domainName=" & #domain# &"&username=yuriw@ukr.net&password=XXXXXX" >
+
+<cfhttp url=#urltorun# method="get" result="result">
+
+	
+
+
+
+<cfset mydoc = XmlParse(result.filecontent) /> 
+
+
+
+<cfset E =  xmlSearch(mydoc,'WhoisRecord/registryData/expiresDate') >
+<cfdump var="#E#" >
+
+	
+<!---
+
+	http://localhost:5555/WHOIS/exp.cfm
+		http://localhost:5555/WHOIS/exp.cfm?domain=alloamerica.us
+<cfdump var="#mydoc#" >
+
+
+	--->
+
+
