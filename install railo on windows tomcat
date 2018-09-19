@@ -1,0 +1,38 @@
+RAILO on Windows
+
+1. copy all railo jars to new folder in tomcat > C:\apache-tomcat-9.0.12\railojars
+2. tell catalina.properties file about this folder with jars:
+Open catalina.properties file from CONF folder.
+Add ${catalina.home}/railojars/*.jar in common.loader setting (approx. at line 47) so it will read like
+common.loader=${catalina.base}/lib
+3 add railo servlets part to tomcat web.xml file:
+<servlet>
+<servlet-name>CFMLServlet</servlet-name>
+<servlet-class>railo.loader.servlet.CFMLServlet</servlet-class>
+<init-param>
+<param-name>configuration</param-name>
+<param-value>{web-root-directory}/WEB-INF/railo/</param-value>
+<description>Configuraton directory</description>
+</init-param>
+<load-on-startup>1</load-on-startup>
+</servlet>
+<servlet-mapping>
+<servlet-name>CFMLServlet</servlet-name>
+<url-pattern>*.cfm</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+<servlet-name>CFMLServlet</servlet-name>
+<url-pattern>*.cfml</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+<servlet-name>CFMLServlet</servlet-name>
+<url-pattern>*.cfc</url-pattern>
+</servlet-mapping>
+
+4 startt tomcat
+
+5 create railo folder in webapps
+
+6 run localhost:8080/railo > it will deplor railo staff to this folder like WEB-INF
+
+7 create ned cfm file run it > done
