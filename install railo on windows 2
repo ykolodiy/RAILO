@@ -1,0 +1,67 @@
+
+
+RAILO on Windows
+https://github.com/getrailo/railo/wiki/Configuration:directory_placeholders
+https://github.com/getrailo/railo/wiki/Configuration:web.xml
+
+1. copy all railo jars to new folder in tomcat > C:\apache-tomcat-9.0.12\railojars
+2. tell catalina.properties file about this folder with jars:
+Open catalina.properties file from CONF folder.
+Add ${catalina.home}/railojars/*.jar in common.loader setting (approx. at line 47) so it will read like
+common.loader=${catalina.base}/lib
+3 add railo servlets part to tomcat web.xml file:
+<servlet id="Railo">
+  <description>Railo CFML Engine</description>
+  <servlet-name>CFMLServlet</servlet-name>    
+  <servlet-class>railo.loader.servlet.CFMLServlet</servlet-class>
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <!-- to specify the location of the Railo Server config and libraries,   -->
+  <!-- uncomment the init-param below.  make sure that the param-value     -->
+  <!-- points to a valid folder, and that the process that runs Railo has  -->
+  <!-- write permissions to that folder.  leave commented for defaults.    -->
+  
+  <init-param>
+    <param-name>railo-server-root</param-name>
+    <param-value>C:\Users\vkoloyu\TOMCAT\apache-tomcat-8.5.34\railojars</param-value>
+    <description>Railo Server configuration directory (for Server-wide configurations, settings, and libraries)</description>
+  </init-param>
+  
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <!-- to specify the location of the Web Contexts' config and libraries,  -->
+  <!-- uncomment the init-param below.  make sure that the param-value     -->
+  <!-- points to a valid folder, and that the process that runs Railo has  -->
+  <!-- write permissions to that folder.  the {web-context-label} can be   -->
+  <!-- set in Railo Server Admin homepage.  leave commented for defaults.  -->
+ 
+  <init-param>
+    <param-name>railo-web-directory</param-name>
+    <param-value>C:\Users\vkoloyu\TOMCAT\apache-tomcat-8.5.34\webapps\Railo85\{web-context-label}/</param-value> 
+    <description>Railo Web Directory (for Website-specific configurations, settings, and libraries)</description>
+  </init-param>
+ 
+  <load-on-startup>1</load-on-startup>
+</servlet>
+
+<servlet-mapping>
+  <servlet-name>CFMLServlet</servlet-name>
+  <url-pattern>*.cfc</url-pattern>
+  <url-pattern>*.cfm</url-pattern>
+  <url-pattern>*.cfml</url-pattern>   
+  <url-pattern>/index.cfc/*</url-pattern>
+  <url-pattern>/index.cfm/*</url-pattern>
+  <url-pattern>/index.cfml/*</url-pattern>
+  
+  <!-- url-pattern>*.cfm/*</url-pattern !-->
+  <!-- url-pattern>*.cfml/*</url-pattern !-->
+  <!-- url-pattern>*.cfc/*</url-pattern !-->
+  <!-- url-pattern>*.htm</url-pattern !-->
+  <!-- url-pattern>*.jsp</url-pattern !-->
+</servlet-mapping>
+
+4 create railo folder in webapps\Railo85
+
+5 startt tomcat
+
+6 run localhost:8080/Railo85/newfolder 
+
+7 create ned cfm file run it > done
