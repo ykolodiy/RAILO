@@ -1,0 +1,18 @@
+
+1 compile java file with downloaded jar in the same folder as classpath
+javac -cp ".;chemistry-opencmis-commons-impl-0.9.0.jar" -d ./build AlfrescoTicket.java
+
+2 cd to build directory and make jar
+jar cvf Alfresco.jar *
+
+3 upload Alfresco.jar  to cfusion/wwwroot/WEB-INF/lib
+cfusion/wwwroot/WEB-INF/lib/Alfresco.jar
+
+4 restart coldfusion > now cf see the class AlfrescoTicket
+
+5. create cfm file with class instantiation
+
+<cfobject type="java" class="AlfrescoTicket" name="myObj"> 
+<cfset y = myObj.init() > 
+<cfdump
+var = "#y#">
