@@ -1,4 +1,8 @@
 
+
+
+
+
 0 compile java file with downloaded jar in the same folder as classpath
 javac -cp ".;chemistry-opencmis-commons-impl-0.9.0.jar" -d ./build AlfrescoTicket.java
 
@@ -7,9 +11,9 @@ javac -cp ".;chemistry-opencmis-commons-impl-0.9.0.jar" -d ./build AlfrescoTicke
 Class-Path: chemistry-opencmis-commons-impl-0.9.0.jar
 
 2 cd to build and make jar
-jar cvf Alfresco.jar Manifest.txt ./*.class
+jar cfm Alfresco.jar Manifest.txt ./*.class
 
-
+!!! https://docs.oracle.com/javase/tutorial/deployment/jar/downman.html
 
 
 3 upload Alfresco.jar and  chemistry-opencmis-commons-impl-0.9.0.jar to cfusion/wwwroot/WEB-INF/lib
