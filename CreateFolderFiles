@@ -7,7 +7,7 @@ localhost:5555/Projects/Jeff/SharePoint/createFolder.cfm
 
 <cfoutput>#GetDirectoryFromPath(GetBaseTemplatePath())# <br></cfoutput>
 
-<!--- Check whether the directory exists. ---> 
+<!--- Check whether the directory exists or not. ---> 
 <cfif DirectoryExists(expandPath("./myNewDir"))> 
     <cfoutput>#expandPath("./myNewDir")# exists</cfoutput>
 <cfelse> 
