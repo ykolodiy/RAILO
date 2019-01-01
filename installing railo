@@ -159,3 +159,17 @@ My assumption is that the above steps would be very similar on other operating s
 Good luck 🙂
 
 Marko
+
+
+
+
+JAVA_HOME="/usr/lib/jvm/java-8-oracle"
+
+nano
+/etc/enviroment 
+/etc/profile 
+/etc/bash.bashrc 
+~/.bashrc
+~/.bash_profile
+
+source ~/.bash_profile
