@@ -1,6 +1,14 @@
-lucee
+Lucee
 https://dev.lucee.org/t/installing-lucee-5-2-7-on-existing-tomcat-9/3889
 
-tomcat
+Tomcat
 https://www.digitalocean.com/community/tutorials/install-tomcat-9-ubuntu-1804
 https://tecadmin.net/install-tomcat-9-on-ubuntu/
+
+Ubuntu
+1 install java
+2 install tomcat
+3 set vars
+4 deplot lucee.war in webapps of tomcat and restart tomcat
+5 folder lucee is created
+6 access localhost:8080/lucee
